@@ -1,9 +1,8 @@
-
-
-## this file conaqtins RStudio dplyr codes
-
+## import libraries and data
 library('nycflights13')
-
 df = flights
 
-df
+
+
+## some basic overview of the data
+head(df)
