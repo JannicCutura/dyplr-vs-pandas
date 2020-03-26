@@ -11,7 +11,6 @@ df.groupby('origin').agg(
     max_airtime = pd.NamedAgg(column='air_time',aggfunc='max'))
 
 
-
 df2 = df.groupby('origin').agg({'air_time': ['count','mean', 'max', 'min'], 'day': ['count']})
 df2['new'] = df2['air_time/count']*2
 df2.columns
