@@ -2,25 +2,40 @@
 ## import libraries
 import pandas as pd
 from nycflights13 import flights
+print("This is pandas version {}. Make sure your version is >0.25 ".format(pd.__version__))
+
+
 
 
 df = flights
 
-pd.__version__
-df.groupby('origin').agg(
-    max_airtime = pd.NamedAgg(column='air_time',aggfunc='max'))
+
+df['avg_speed'] = df['distance'] / df['air_time']
+df['LongFlight'] = df['air_time'] > 150.6865
 
 
-df2 = df.groupby('origin').agg({'air_time': ['count','mean', 'max', 'min'], 'day': ['count']})
-df2['new'] = df2['air_time/count']*2
-df2.columns
+df.groupby(['origin','day']).agg(
+    max_airtime=pd.NamedAgg(column='air_time',aggfunc='max'),
+    mean_airtime=pd.NamedAgg('air_time','mean')).reset_index()
+
+
+
+df['mean_airtime'] = df.groupby(['origin','day'], as_index=True)['air_time'].transform('mean')
+df['min_airtime'] = df.groupby(['origin','day'], as_index=True)['air_time'].transform('min')
+df['max_airtime'] = df.groupby(['origin','day'], as_index=True)['air_time'].transform('max')
+df['std_airtime'] = df.groupby(['origin','day'], as_index=True)['air_time'].transform('std')
+
+
+
+df[df.dep_delay > 150.6865]
+df[df["dep_delay"] > 150.6865]
 
 
 
 
-df2 = df2.rename(columns={'air_time/count':'test'})
-df2.reset_index()
 
-df2.describe
-df2.columns.droplevel(1)
-grouped_single = df.groupby('Team').agg({'Age': ['mean', 'min', 'max']})
+
+
+
+
+
