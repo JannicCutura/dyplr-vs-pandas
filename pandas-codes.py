@@ -27,6 +27,8 @@ df['std_airtime'] = df.groupby(['origin','day'], as_index=True)['air_time'].tran
 
 
 
+
+
 df[df.dep_delay > 150.6865]
 df[df["dep_delay"] > 150.6865]
 
