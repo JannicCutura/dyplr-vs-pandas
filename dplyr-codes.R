@@ -9,7 +9,7 @@ df = flights
 
 # show the first 5 rows
 head(df)
-
+tail(df)
 colnames(df)
 
 
@@ -34,6 +34,8 @@ df = df %>%
          air_time_max = max(air_time, na.rm= TRUE),
          air_time_min = min(air_time, na.rm= TRUE),
          air_time_std = sd(air_time, na.rm= TRUE))
+
+
 
 
 df %>% filter(dep_delay > 3)
