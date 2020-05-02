@@ -24,7 +24,12 @@ df['mean_airtime'] = df.groupby(['origin','day'], as_index=True)['air_time'].tra
 df['min_airtime'] = df.groupby(['origin','day'], as_index=True)['air_time'].transform('min')
 df['max_airtime'] = df.groupby(['origin','day'], as_index=True)['air_time'].transform('max')
 df['std_airtime'] = df.groupby(['origin','day'], as_index=True)['air_time'].transform('std')
-df['count_connections'] = df.groupby(['origin','dest'], as_index=True)['max_airtime'].transform('count')
+
+# count number of times a connection was used
+df['count_connections'] = df.groupby(['origin','dest'], as_index=True)['day'].transform('size')
+
+# the same, but don't count if day is NA.
+df['count_connections2'] = df.groupby(['origin','dest'], as_index=True)['day'].transform('count')
 
 
 
