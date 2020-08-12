@@ -14,6 +14,9 @@ df['avg_speed'] = df['distance'] / df['air_time']
 df['LongFlight'] = df['air_time'] > 150.6865
 
 
+df = df.assign(avg_speed = lambda x: x['distance']/ x['air_time']) \
+        .query('air_time > 15.6865')
+
 df.groupby(['origin','day']).agg(
     max_airtime=pd.NamedAgg(column='air_time',aggfunc='max'),
     mean_airtime=pd.NamedAgg('air_time','mean')).reset_index()
