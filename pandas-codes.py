@@ -1,6 +1,8 @@
 
 ## import libraries
+import numpy as np
 import pandas as pd
+import time
 from nycflights13 import flights
 print("This is pandas version {}. Make sure your version is >0.25 ".format(pd.__version__))
 
@@ -31,7 +33,7 @@ df = df.pipe(csnap,  msg="Let's start") \
 
 
 
-        .query('air_time > 15.6865')
+
 
 #change date format
 #.assign(QTR = lambda x: x.QTR.dt.to_period('Q'))
@@ -42,6 +44,41 @@ df.groupby(['origin','day'])\
     airtime_min=pd.NamedAgg(column='air_time',aggfunc='min'),
     airtime_std=pd.NamedAgg(column='air_time',aggfunc='std'))\
   .reset_index()
+
+df['test'] =1
+df.loc[df.index[2],'test'] = 50
+df = df.query('air_time > 15.6865') \
+       .pipe(csnap,  msg="Before transform") \
+       .join(df.groupby(['origin','day'])
+               .agg(airtime_avg=pd.NamedAgg(column='test',aggfunc='mean'),
+                    airtime_max=pd.NamedAgg(column='air_time',aggfunc='max'),
+                    airtime_min=pd.NamedAgg(column='air_time',aggfunc='min'),
+                    airtime_std=pd.NamedAgg(column='air_time',aggfunc='std')),on=['origin','day'], how="left")\
+       .pipe(csnap,  msg = "After transform")
+
+
+import pandas as pd
+import numpy as np
+# Import CSV mtcars
+data = pd.read_csv('https://gist.githubusercontent.com/ZeccaLehn/4e06d2575eb9589dbe8c365d61cb056c/raw/64f1660f38ef523b2a1a13be77b002b98665cdfe/mtcars.csv') \
+         .rename(columns={'Unnamed: 0':'brand'}) \
+         .assign(mpg=lambda x: np.where(x.cyl == 4, -99, x.mpg))
+
+
+
+
+
+df = pd.DataFrame(np.random.randint(0,100,size=(50000000, 2)), columns=list('AB'))
+start_time = time.time()
+df2 = df.loc[df.B <50, 'A' ] = -99
+print("--- %s seconds ---" % (time.time() - start_time))
+
+
+start_time = time.time()
+df3= df.assign(A=lambda x: np.where(x.B < 50, -99, x.A))
+print("--- %s seconds ---" % (time.time() - start_time))
+
+
 
 
 
@@ -55,6 +92,8 @@ df['count_connections'] = df.groupby(['origin','dest'], as_index=True)['day'].tr
 
 # the same, but don't count if day is NA.
 df['count_connections2'] = df.groupby(['origin','dest'], as_index=True)['day'].transform('count')
+
+
 
 
 
