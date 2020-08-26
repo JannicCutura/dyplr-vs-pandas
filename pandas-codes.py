@@ -90,6 +90,8 @@ df = df.query('air_time > 15.6865') \
 ## working with date
 df = df.assign(date = lambda x: pd.to_datetime(x[['year','month', 'day']]))
 
+
+
 df = df.assign(qtr = lambda x: x.date.dt.to_period('q'))
 
 
