@@ -82,15 +82,25 @@ df = df.query('air_time > 15.6865') \
 
 
 
-## filter
-df4 = df.query("dep_delay > 0 and arr_delay.notnull() and carrier.str.contains('U') and tailnum.str.len() == 5", engine='python')
-
 
 ## working with dates and time
 
 
 
+## working with date
+df = df.assign(date = lambda x: pd.to_datetime(x[['year','month', 'day']]))
 
+df = df.assign(qtr = lambda x: x.date.dt.to_period('q'))
+
+
+
+
+## filter
+df4 = df.query("dep_delay > 0 and \
+               arr_delay.notnull() \
+               and carrier.str.contains('U') and \
+               tailnum.str.len() == 5 and \
+               qtr > @pd.Period('2013Q1','Q') ", engine='python')
 
 
 
@@ -112,13 +122,6 @@ print("--- %s seconds ---" % (time.time() - start_time))
 start_time = time.time()
 df3 = df.assign(A=lambda x: np.where(x.B < 50, -99, x.A))
 print("--- %s seconds ---" % (time.time() - start_time))
-
-
-
-df[df.dep_delay > 150.6865]
-df[df["dep_delay"] > 150.6865]
-
-
 
 
 
