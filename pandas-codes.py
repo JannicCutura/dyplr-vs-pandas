@@ -45,6 +45,7 @@ df.columns
 ## add / replace variables
 df = df.assign(sched_arr_time2 =lambda x:  x.sched_arr_time**2,
                dep_time=lambda x: np.where(x.arr_delay < 0, -99, x.dep_time),
+               avg_speed = lambda x: x.avg_speed.fillna(0),
                avg_speed=lambda x: x['distance'] / x['air_time'],
                LongFlight=lambda x: x['air_time'] > 15.6865)
 
