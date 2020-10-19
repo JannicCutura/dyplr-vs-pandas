@@ -80,11 +80,17 @@ df = df.query('air_time > 15.6865') \
                ), on=['origin', 'day'], how="left") \
     .pipe(csnap, msg="After transform")
 
+
+# or with assign
+df.assign(newID = df.groupby(['origin']).ngroup(),
+          min_airtime = df.groupby(['origin','day'])['air_time'].transform('min'),
+          count_connections = df.groupby(['origin','dest'])['air_time'].transform('count'))
+
 # same thing but without NamedAgg
-df['min_airtime'] = df.groupby(['origin','day'], as_index=True)['air_time'].transform('min')
-df['max_airtime'] = df.groupby(['origin','day'], as_index=True)['air_time'].transform('max')
-df['std_airtime'] = df.groupby(['origin','day'], as_index=True)['air_time'].transform('std')
-df['count_connections'] = df.groupby(['origin','dest'], as_index=True)['max_airtime'].transform('count')
+df['min_airtime'] = df.groupby(['origin','day'])['air_time'].transform('min')
+df['max_airtime'] = df.groupby(['origin','day'])['air_time'].transform('max')
+df['std_airtime'] = df.groupby(['origin','day'])['air_time'].transform('std')
+df['count_connections'] = df.groupby(['origin','dest'])['max_airtime'].transform('count')
 
 
 
