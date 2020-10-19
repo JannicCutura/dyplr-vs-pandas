@@ -81,6 +81,7 @@ df = df.query('air_time > 15.6865') \
     .pipe(csnap, msg="After transform")
 
 
+
 # or with assign
 df.assign(newID = df.groupby(['origin']).ngroup(),
           min_airtime = df.groupby(['origin','day'])['air_time'].transform('min'),
