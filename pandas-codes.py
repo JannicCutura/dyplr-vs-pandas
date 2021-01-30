@@ -58,10 +58,11 @@ df = df.rename({'time_hour': 'timehour'}, axis='columns')
 ## show duplicates
 df[df.tailnum.duplicated(keep=False)].sort_values(['year', 'month', 'day'])
 
-
-
 ## case-when
-
+df['length'] = np.where((df["distance"].between(0, 500, inclusive=False) and (df.dep_delay < 100 ), 'Short',
+               np.where(df['distance'].between(500, 1500, inclusive=False), 'Medium',
+               np.where(df['distance'].between(1500, df['distance'].max(), inclusive=False), 'Long',
+                            'Unknown')))
 
 
 ## groupby by summarise
