@@ -55,8 +55,16 @@ df = df.pipe(reorder, ['year', 'month', 'day','dep_delay'])
 ## rename columns
 df = df.rename({'time_hour': 'timehour'}, axis='columns')
 
+## show duplicates
+df[df.tailnum.duplicated(keep=False)].sort_values(['year', 'month', 'day'])
 
-# groupy by summarise
+
+
+## case-when
+
+
+
+## groupby by summarise
 df.groupby(['origin', 'day']) \
     .agg(
     airtime_avg=pd.NamedAgg(column='air_time', aggfunc='mean'),
