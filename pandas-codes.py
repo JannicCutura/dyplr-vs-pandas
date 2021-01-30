@@ -1,3 +1,4 @@
+
 ## import libraries
 import numpy as np
 import pandas as pd
@@ -31,22 +32,21 @@ def reorder(df, cols):
 
 
 
-
 df = flights
+
 
 
 # some stats and info
 df.head()
-df.columns
+
 
 
 
 
 ## add / replace variables
 df = df.assign(sched_arr_time2 =lambda x:  x.sched_arr_time**2,
+               sched_arr_time = lambda x: x.sched_arr_time.fillna(0),
                dep_time=lambda x: np.where(x.arr_delay < 0, -99, x.dep_time),
-               avg_speed = lambda x: x.avg_speed.fillna(0),
-               avg_speed=lambda x: x['distance'] / x['air_time'],
                LongFlight=lambda x: x['air_time'] > 15.6865)
 
 ## order variables
@@ -145,6 +145,46 @@ print("--- %s seconds ---" % (time.time() - start_time))
 start_time = time.time()
 df3 = df.assign(A=lambda x: np.where(x.B < 50, -99, x.A))
 print("--- %s seconds ---" % (time.time() - start_time))
+
+
+import plotly.graph_objects as go
+
+
+fig = go.Figure(go.Waterfall(
+    name = "20", orientation = "v",
+    measure = ["relative", "relative", "total", "relative", "relative", "total"],
+    x = ["Sales", "Consulting", "Net revenue", "Purchases", "Other expenses", "Profit before tax"],
+    textposition = "outside",
+    text = ["+60", "+80", "", "-40", "-20", "Total"],
+    y = [60, 80, 0, -40, -20, 0],
+    connector = {"line":{"color":"rgb(63, 63, 63)"}},
+))
+
+fig.update_layout(
+        title = "Profit and loss statement 2018",
+        showlegend = True
+)
+
+fig.show()
+fig.write_image("fig1.jpeg", scale=3)
+
+
+
+fig = go.Figure(go.Waterfall(
+    x = [["2016", "2017", "2017", "2017", "2017", "2018", "2018", "2018", "2018"],
+       ["initial", "q1", "q2", "q3", "total", "q1", "q2", "q3", "total"]],
+    measure = ["absolute", "relative", "relative", "relative", "total", "relative", "relative", "relative", "total"],
+    y = [10, 20, 30, -10, None, 10, 20, -40, None], base = 300,
+    decreasing = {"marker":{"color":"#FF4B00", "line":{"color":"#FF4B00", "width":2}}},
+    increasing = {"marker":{"color":"#65B800"}},
+    totals = {"marker":{"color":"#003299", "line":{"color":"#003299", "width":3}}}
+))
+
+fig.update_layout(title = "Profit and loss statement", waterfallgap = 0.3)
+
+fig.show()
+
+
 
 
 
