@@ -30,18 +30,10 @@ def reorder(df, cols):
     others = df.columns.difference(cols).tolist()
     return df[cols+others]
 
-
-
 df = flights
-
-
 
 # some stats and info
 df.head()
-
-
-
-
 
 ## add / replace variables
 df = df.assign(sched_arr_time2 =lambda x:  x.sched_arr_time**2,
@@ -59,10 +51,16 @@ df = df.rename({'time_hour': 'timehour'}, axis='columns')
 df[df.tailnum.duplicated(keep=False)].sort_values(['year', 'month', 'day'])
 
 ## case-when
-df['length'] = np.where((df["distance"].between(0, 500, inclusive=False) and (df.dep_delay < 100 ), 'Short',
+
+df['length'] =(np.where((df["distance"].between(0, 500, inclusive=False) & (df.dep_delay < 100 ), 'Short',
                np.where(df['distance'].between(500, 1500, inclusive=False), 'Medium',
                np.where(df['distance'].between(1500, df['distance'].max(), inclusive=False), 'Long',
-                            'Unknown')))
+                            'Unknown')))))
+
+df['length'] = 'unknown'
+df.loc[(df['distance'].between(0,500,inclusive=False)) & ((df.dep_delay < 100)), 'length'] = 'short'
+df.loc[df['distance'].between(0,500,inclusive=False), 'length'] = 'medium'
+df.loc[df['distance'].between(0,df['distance'].max(),inclusive=False), 'length'] = 'long'
 
 
 ## groupby by summarise
@@ -73,8 +71,6 @@ df.groupby(['origin', 'day']) \
     airtime_min=pd.NamedAgg(column='air_time', aggfunc='min'),
     airtime_std=pd.NamedAgg(column='air_time', aggfunc='std')) \
     .reset_index()
-
-
 
 ## groupby mutate
 df = df.query('air_time > 15.6865') \
